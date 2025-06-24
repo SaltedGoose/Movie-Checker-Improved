@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/header.ejs') %>
+<body>
+    <%- include('partials/navbar.ejs') %>
+    <div id="main" class="container px-3">
+        <div class="form-div mb-4">
+            <form method="post">
+                <div class="form-div mb-4">
+                <label class="form-label me-2">Movie Name:</label>
+                <input type="text" class="form-control mb-2" name="name"/>
+                </div>
+                <div class="form-div mb-4">
+                <label class="form-label me-2">Location:</label>
+                <input type="text" class="form-control mb-2" name="location"/>
+                </div>
+                <div class="form-div mb-4">
+                <label class="form-label me-2">Letter:</label>
+                <input type="text" class="form-control mb-2" name="letter"/>
+                </div>
+                <div class="form-div mb-4">
+                <label class="form-label me-2">Category:</label>
+                <input type="text" class="form-control mb-2" name="category"/>
+                </div>
+                <div class="form-div mb-4">
+                <label class="form-label me-2">Main Actors:</label>
+                <input type="text" class="form-control mb-2" name="main_actors"/>
+                </div>
+                <button id="add" class="btn btn-outline-primary" formaction="/add">Add</button>
+                <% if(locals.response) {%>
+                    <h5 id="add-response"><%= response %></h5>
+                <% }else { %>
+                    <h5 id="add-response"></h5>
+                <% } %>
+            </form>
+        </div>
+    </div>
+    <%- include('partials/footer.ejs') %>
+</body>
+</html>

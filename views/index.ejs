@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/header.ejs') %>
+<body>
+    <%- include('partials/navbar.ejs') %>
+    <div id="main" class="container px-3">
+        <div class="form-div mb-4">
+            <form method="post">
+                <label class="form-label me-2">Search:</label>
+                <input type="text" onfocus="this.value=''" class="form-control mb-2" name="param" autocomplete="off">
+                <button class="btn btn-outline-primary" formaction="/search">Search</button>
+                <button class="btn btn-outline-primary" formaction="/random">Random</button>
+                <button class="btn btn-outline-primary" formaction="/update">Update</button>
+                <button class="btn btn-outline-danger" formaction="/delete">Delete</button>
+                <% if(locals.response) {%>
+                    <h5 id="delete-response"><%= response %></h5>
+                <% }else { %>
+                    <h5 id="delete-response"></h5>
+                <% } %>
+            </form>
+        </div>
+
+        <div class="movie-info">
+            <% if(locals.movieData){ %>
+                <h3>Movie Name: <%= movieData.name %></h3>
+                <h3>Location: <%= movieData.location %></h3>
+                <h3>Letter: <%= movieData.letter %></h3>
+                <h3>Number: <%= movieNumber %></h3>
+                <h3>Category: <%= movieData.category %></h3>
+                <h3>Main Actors: <%= movieData.main_actors %></h3>
+            <% }else if (locals.errorResponse){ %>
+                <h3>Movie Name: <%= errorResponse %></h3>
+                <h3>Location: </h3>
+                <h3>Letter: </h3>
+                <h3>Number: </h3>
+                <h3>Category: </h3>
+                <h3>Main Actors: </h3>
+            <% }else{ %>
+                <h3>Movie Name: </h3>
+                <h3>Location: </h3>
+                <h3>Letter: </h3>
+                <h3>Number: </h3>
+                <h3>Category: </h3>
+                <h3>Main Actors: </h3>
+            <% } %>
+        </div>
+
+        <img src="/images/img_1.png" alt="movie image" id="movie-img">
+    </div>
+
+    <%- include('partials/footer.ejs') %>
+    <script src="/movie_checker.js"></script>
+</body>
+</html>

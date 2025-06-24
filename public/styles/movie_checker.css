@@ -1,0 +1,23 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+#main {
+  flex: 1;
+}
+
+#movie-img{
+  width: 100%;
+}
+
+#add-response, #delete-response{
+  display: inline-block;
+  margin-left: 20px;
+}

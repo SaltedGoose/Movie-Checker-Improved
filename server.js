@@ -7,7 +7,7 @@ const port = process.env.PORT || 3000;
 
 const db = new pg.Client({
   user: 'movies_i3n8_user',
-  host: process.env.DATABASE_URL    ,
+  host: process.env.DATABASE_URL,
   database: 'movies_i3n8',
   password: 'GmP9fujyyERqF7HqVwvEsPw9wIh69qB5',
   port: 5432,
@@ -28,6 +28,19 @@ async function getNumber(movieName){
     const movieIndex = response.rows.findIndex(row => row.name.toLowerCase().replace("'", "").replace("?", "") === searchMovieName);
     return movieIndex+1;
 } 
+
+async function changeLogs(movieData, type){
+    const date = String(new Date());
+    await db.query("INSERT INTO change_logs (name, location, letter, category, main_actors, date, type) VALUES ($1, $2, $3, $4, $5)", [
+        movieData.name, 
+        movieData.location, 
+        movieData.letter, 
+        movieData.category, 
+        movieData.main_actors,
+        date,
+        type
+    ]);
+}
 
 app.get("/", (req, res) => {
     res.render("index.ejs");
@@ -81,11 +94,12 @@ app.post("/update", async (req, res) => {
 })
 
 app.post("/delete", async (req, res) => {
-    const response = await db.query("DELETE FROM movies WHERE LOWER (name) = $1", [req.body.param.toLowerCase()]);
+    const response = await db.query("DELETE FROM movies WHERE LOWER (name) = $1 RETURNING *", [req.body.param.toLowerCase()]);
     if (response.rowCount === 0){
         res.render("index.ejs", {response: `Failed, Movie: ${req.body.param} does not exist`});
     }else {
-    res.render("index.ejs", {response:"Success"});
+        changeLogs(response.rows[0], "delete");
+        res.render("index.ejs", {response:"Success"});
     }
 });
 

@@ -31,7 +31,7 @@ async function getNumber(movieName){
 
 async function changeLogs(movieData, type){
     const date = String(new Date());
-    await db.query("INSERT INTO change_logs (name, location, letter, category, main_actors, date, type) VALUES ($1, $2, $3, $4, $5)", [
+    await db.query("INSERT INTO change_logs (name, location, letter, category, main_actors, date, type) VALUES ($1, $2, $3, $4, $5, $6, $7)", [
         movieData.name, 
         movieData.location, 
         movieData.letter, 
@@ -98,7 +98,7 @@ app.post("/delete", async (req, res) => {
     if (response.rowCount === 0){
         res.render("index.ejs", {response: `Failed, Movie: ${req.body.param} does not exist`});
     }else {
-        changeLogs(response.rows[0], "delete");
+        await changeLogs(response.rows[0], "delete");
         res.render("index.ejs", {response:"Success"});
     }
 });

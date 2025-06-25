@@ -1,6 +1,7 @@
 import express, { response } from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
+import bcrypt from 'bcrypt';
 
 const app = express();
 const port = process.env.PORT || 3000;

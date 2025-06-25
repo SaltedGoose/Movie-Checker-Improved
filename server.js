@@ -110,7 +110,7 @@ app.get("/add", (req, res) => {
 app.post("/add", async (req, res) => {
     try{
         await db.query("INSERT INTO movies (name, location, letter, category, main_actors) VALUES ($1, $2, $3, $4, $5)", Object.values(req.body));
-        await changeLogs(req.body, "update");
+        await changeLogs(req.body, "add");
         res.render("adding_page.ejs", {response: "Success"})
     }catch(err){
         console.log(err.stack);

@@ -47,6 +47,7 @@ app.get("/", (req, res) => {
 })
 
 app.post("/search", async (req, res) => {
+    const page = req.body.page;
     const requestedMovie = req.body.param.toLowerCase();
     const response = await db.query(
         `SELECT * FROM movies
@@ -55,10 +56,20 @@ app.post("/search", async (req, res) => {
         [requestedMovie.toLowerCase()]
     );
     if (response.rows.length === 0){
-        res.render("index.ejs", {errorResponse: "Movie not found try again"});
+        if(page === "index-page"){
+            res.render("index.ejs", {errorResponse: "Movie not found try again"});
+        }
+        else if(page === "admin-page"){
+            res.render("admin_page.ejs", {errorResponse: "Movie not found try again"});
+        }
     }else{
         const movieNumber = await getNumber(requestedMovie);
-        res.render("index.ejs", {movieData: response.rows[0], movieNumber: movieNumber});
+        if(page === "index-page"){
+            res.render("index.ejs", {movieData: response.rows[0], movieNumber: movieNumber});
+        }
+        else if(page === "admin-page"){
+            res.render("admin_page.ejs", {movieData: response.rows[0], movieNumber: movieNumber});
+        }
     }
 })
 
@@ -78,6 +89,20 @@ app.post("/random", async (req, res) => {
     res.render("index.ejs", {movieData: response.rows[randomIndex], movieNumber: movieNumber});
 })
 
+app.get("/add", (req, res) => {
+    res.render("adding_page.ejs");
+})
+
+app.post("/add", async (req, res) => {
+    try{
+        await db.query("INSERT INTO movies (name, location, letter, category, main_actors) VALUES ($1, $2, $3, $4, $5)", Object.values(req.body));
+        await changeLogs(req.body, "add");
+        res.render("adding_page.ejs", {response: "Success"})
+    }catch(err){
+        res.render("adding_page.ejs", {response: "Failed, Movie already exists"})
+    }
+})
+
 app.post("/update", async (req, res) => {
     const updateMovieName = req.body.param;
     const response = await db.query(
@@ -93,6 +118,12 @@ app.post("/update", async (req, res) => {
     }
 })
 
+app.post("/update-current-movie", async (req, res) => {
+    await db.query("UPDATE movies SET name = $1, location = $2, letter = $3, category = $4, main_actors = $5 WHERE id = $6", Object.values(req.body));
+    await changeLogs(req.body, "update");
+    res.redirect("/admin");
+})
+
 app.post("/delete", async (req, res) => {
     const response = await db.query("DELETE FROM movies WHERE LOWER (name) = $1 RETURNING *", [req.body.param.toLowerCase()]);
     if (response.rowCount === 0){
@@ -103,25 +134,33 @@ app.post("/delete", async (req, res) => {
     }
 });
 
-app.get("/add", (req, res) => {
-    res.render("adding_page.ejs");
+app.get("/login", (req, res) => {
+    res.render("login_page.ejs");
 })
 
-app.post("/add", async (req, res) => {
+app.post("/login", async (req, res) => {
+    const inputUsername = req.body.username;
+    const inputPassword = req.body.password;
     try{
-        await db.query("INSERT INTO movies (name, location, letter, category, main_actors) VALUES ($1, $2, $3, $4, $5)", Object.values(req.body));
-        await changeLogs(req.body, "add");
-        res.render("adding_page.ejs", {response: "Success"})
+        const response = await db.query("SELECT * FROM logins WHERE username=$1",[inputUsername]);
+        const passwordMatch = await bcrypt.compare(inputPassword, response.rows[0].password);
+        if(passwordMatch){
+            res.render("admin_page.ejs");
+        }else{
+            res.render("login_page.ejs", {response:"Incorrect Password"});
+        }
     }catch(err){
-        console.log(err.stack);
-        res.render("adding_page.ejs", {response: "Failed, Movie already exists"})
+        res.render("login_page.ejs", {response:"User does not exist"});
     }
 })
 
-app.post("/update-current-movie", async (req, res) => {
-    await db.query("UPDATE movies SET name = $1, location = $2, letter = $3, category = $4, main_actors = $5 WHERE id = $6", Object.values(req.body));
-    await changeLogs(req.body, "update");
-    res.redirect("/");
+app.get("/admin", (req, res) => {
+    res.render("admin_page.ejs");
+})
+
+app.get("/logs", async (req, res) => {
+    const response = await db.query("SELECT * FROM change_logs");
+    res.render("log_page.ejs", {logs: response.rows});
 })
 
 app.listen(port, () => {

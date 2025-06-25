@@ -21,3 +21,36 @@ body {
   display: inline-block;
   margin-left: 20px;
 }
+
+#login-div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+#password-div{
+  display: flex;
+  flex-direction: row;
+}
+
+#reveal-button{
+  border-radius: 50%;
+  border-color: white;
+}
+
+#main-log-div{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+#log-div{
+  flex: 0 0 40%;
+  padding: 40px;
+  margin: 10px;
+  border-radius: 10%;
+  border: 4px solid #DBDBDB;
+}

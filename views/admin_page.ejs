@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('partials/header.ejs') %>
+<body>
+    <nav class="navbar bg-light mb-4">
+        <div class="container-fluid d-flex justify-content-between align-items-center px-4">
+            <a class="navbar-brand" href="/">Movie Checker</a>
+            <div>
+                <a class="nav-link d-inline px-2" href="/">Home</a>
+                <a class="nav-link d-inline px-2" href="/admin">Admin</a>
+                <a class="nav-link d-inline px-2" href="/logs">Logs</a>
+            </div>
+        </div>
+    </nav>
+    <div id="main" class="container px-3">
+        <div class="form-div mb-4">
+            <form method="post">
+                <label class="form-label me-2">Search:</label>
+                <input type="text" onfocus="this.value=''" class="form-control mb-2" name="param" autocomplete="off">
+                <input type="hidden" name="page" value="admin-page">
+                <button class="btn btn-outline-primary" formaction="/search">Search</button>
+                <button class="btn btn-outline-primary" formaction="/update">Update</button>
+                <button class="btn btn-outline-danger" formaction="/delete">Delete</button>
+                <% if(locals.response) {%>
+                    <h5 id="delete-response"><%= response %></h5>
+                <% }else { %>
+                    <h5 id="delete-response"></h5>
+                <% } %>
+            </form>
+        </div>
+        <div class="movie-info">
+            <% if(locals.movieData){ %>
+                <h3>Movie Name: <%= movieData.name %></h3>
+                <h3>Location: <%= movieData.location %></h3>
+                <h3>Letter: <%= movieData.letter %></h3>
+                <h3>Number: <%= movieNumber %></h3>
+                <h3>Category: <%= movieData.category %></h3>
+                <h3>Main Actors: <%= movieData.main_actors %></h3>
+            <% }else if (locals.errorResponse){ %>
+                <h3>Movie Name: <%= errorResponse %></h3>
+                <h3>Location: </h3>
+                <h3>Letter: </h3>
+                <h3>Number: </h3>
+                <h3>Category: </h3>
+                <h3>Main Actors: </h3>
+            <% }else{ %>
+                <h3>Movie Name: </h3>
+                <h3>Location: </h3>
+                <h3>Letter: </h3>
+                <h3>Number: </h3>
+                <h3>Category: </h3>
+                <h3>Main Actors: </h3>
+            <% } %>
+        </div>
+    </div>
+    <%- include('partials/footer.ejs') %>    
+</body>
+</html>

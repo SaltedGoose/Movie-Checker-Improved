@@ -24,7 +24,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 async function getNumber(movieName){
     const searchMovieName = movieName.toLowerCase().replace("'", "").replace("?", "");
-    console.log(searchMovieName.charAt(0));
     const response = await db.query("SELECT * FROM movies WHERE LOWER (letter) = $1 ORDER BY REPLACE(name, ' ', '') ASC", [searchMovieName.charAt(0)]);
     const movieIndex = response.rows.findIndex(row => row.name.toLowerCase().replace("'", "").replace("?", "") === searchMovieName);
     return movieIndex+1;
@@ -32,13 +31,14 @@ async function getNumber(movieName){
 
 async function changeLogs(movieData, type){
     const date = String(new Date());
+    const trimmedDate = date.split(' GMT')[0];
     await db.query("INSERT INTO change_logs (name, location, letter, category, main_actors, date, type) VALUES ($1, $2, $3, $4, $5, $6, $7)", [
         movieData.name, 
         movieData.location, 
         movieData.letter, 
         movieData.category, 
         movieData.main_actors,
-        date,
+        trimmedDate,
         type
     ]);
 }
@@ -128,10 +128,10 @@ app.post("/update-current-movie", async (req, res) => {
 app.post("/delete", async (req, res) => {
     const response = await db.query("DELETE FROM movies WHERE LOWER (name) = $1 RETURNING *", [req.body.param.toLowerCase()]);
     if (response.rowCount === 0){
-        res.render("index.ejs", {response: `Failed, Movie: ${req.body.param} does not exist`});
+        res.render("admin_page.ejs", {response: `Failed, Movie: ${req.body.param} does not exist`});
     }else {
         await changeLogs(response.rows[0], "delete");
-        res.render("index.ejs", {response:"Success"});
+        res.render("admin_page.ejs", {response:"Success"});
     }
 });
 

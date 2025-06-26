@@ -32,12 +32,12 @@ async function getNumber(movieName){
 async function changeLogs(movieData, type){
     const date = String(new Date());
     const trimmedDate = date.split(' GMT')[0];
-    await db.query("INSERT INTO change_logs (name, location, letter, category, main_actors, date, type) VALUES ($1, $2, $3, $4, $5, $6, $7)", [
+    await db.query("INSERT INTO change_logs (name, location, letter, category, main_actors_actresses, date, type) VALUES ($1, $2, $3, $4, $5, $6, $7)", [
         movieData.name, 
         movieData.location, 
         movieData.letter, 
         movieData.category, 
-        movieData.main_actors,
+        movieData.main_actors_actresses,
         trimmedDate,
         type
     ]);
@@ -78,7 +78,7 @@ app.post("/random", async (req, res) => {
     const randomParam = req.body.param.toLowerCase();
     let response = await db.query("SELECT * FROM movies WHERE LOWER (category) LIKE '%' || $1 || '%' ORDER BY REPLACE (name, ' ', '') ASC", [randomParam]);
     if (response.rows.length === 0){
-        response = await db.query("SELECT * FROM movies WHERE LOWER (main_actors) LIKE '%' || $1 || '%' ORDER BY REPLACE (name, ' ', '') ASC", [randomParam]);
+        response = await db.query("SELECT * FROM movies WHERE LOWER (main_actors_actresses) LIKE '%' || $1 || '%' ORDER BY REPLACE (name, ' ', '') ASC", [randomParam]);
         if (response.rows.length === 0){
             res.render("index.ejs", {errorResponse: "Invalid Movie Category or Main Actor"});
             return
@@ -96,7 +96,7 @@ app.get("/add", (req, res) => {
 
 app.post("/add", async (req, res) => {
     try{
-        await db.query("INSERT INTO movies (name, location, letter, category, main_actors) VALUES ($1, $2, $3, $4, $5)", Object.values(req.body));
+        await db.query("INSERT INTO movies (name, location, letter, category, main_actors_actresses) VALUES ($1, $2, $3, $4, $5)", Object.values(req.body));
         await changeLogs(req.body, "add");
         res.render("adding_page.ejs", {response: "Success"})
     }catch(err){
@@ -120,7 +120,7 @@ app.post("/update", async (req, res) => {
 })
 
 app.post("/update-current-movie", async (req, res) => {
-    await db.query("UPDATE movies SET name = $1, location = $2, letter = $3, category = $4, main_actors = $5 WHERE id = $6", Object.values(req.body));
+    await db.query("UPDATE movies SET name = $1, location = $2, letter = $3, category = $4, main_actors_actresses = $5 WHERE id = $6", Object.values(req.body));
     await changeLogs(req.body, "update");
     res.redirect("/admin");
 })

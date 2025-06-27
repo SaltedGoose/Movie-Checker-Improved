@@ -95,8 +95,10 @@ app.get("/add", (req, res) => {
 })
 
 app.post("/add", async (req, res) => {
+    let movieData = req.body;
+    movieData.letter = movieData.name.charAt(0).toUpperCase();
     try{
-        await db.query("INSERT INTO movies (name, location, letter, category, main_actors_actresses) VALUES ($1, $2, $3, $4, $5)", Object.values(req.body));
+        await db.query("INSERT INTO movies (name, location, letter, category, main_actors_actresses) VALUES ($1, $2, $5, $4, $3)", Object.values(req.body));
         await changeLogs(req.body, "add");
         res.render("adding_page.ejs", {response: "Success"})
     }catch(err){

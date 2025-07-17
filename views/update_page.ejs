@@ -2,7 +2,16 @@
 <html lang="en">
 <%- include('partials/header.ejs') %>
 <body>
-    <%- include('partials/navbar.ejs') %>
+    <nav class="navbar bg-light mb-4">
+        <div class="container-fluid d-flex justify-content-between align-items-center px-4">
+            <a class="navbar-brand" href="/">Movie Checker</a>
+            <div>
+                <a class="nav-link d-inline px-2" href="/">Home</a>
+                <a class="nav-link d-inline px-2" href="/admin">Admin</a>
+                <a class="nav-link d-inline px-2" href="/logs">Logs</a>
+            </div>
+        </div>
+    </nav>
     <div id="main" class="container px-3">
         <div class="form-div mb-4">
             <form method="post">
@@ -23,8 +32,8 @@
                 <input type="text" class="form-control mb-2" name="category" value="<%= movieData.category %>"/>
                 </div>
                 <div class="form-div mb-4">
-                <label class="form-label me-2">Main Actors:</label>
-                <input type="text" class="form-control mb-2" name="main_actors" value="<%= movieData.main_actors %>"/>
+                <label class="form-label me-2">Main Actors_Actresses:</label>
+                <input type="text" class="form-control mb-2" name="main_actors_actresses" value="<%= movieData.main_actors_actresses %>"/>
                 </div>
                 <input type="hidden" name="id" value="<%= movieData.id %>">
                 <button id="add" class="btn btn-outline-primary" formaction="/update-current-movie">Update</button>

@@ -53,4 +53,5 @@ body {
   margin: 10px;
   border-radius: 10%;
   border: 4px solid #DBDBDB;
+  min-height: 350px;
 }

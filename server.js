@@ -97,11 +97,15 @@ app.get("/add", (req, res) => {
 app.post("/add", async (req, res) => {
     let movieData = req.body;
     movieData.letter = movieData.name.charAt(0).toUpperCase();
+    console.log(movieData);
     try{
-        await db.query("INSERT INTO movies (name, location, letter, category, main_actors_actresses) VALUES ($1, $2, $5, $4, $3)", Object.values(req.body));
-        await changeLogs(req.body, "add");
+        await db.query("INSERT INTO movies (name, location, letter, category, main_actors_actresses) VALUES ($1, $2, $3, $4, $5)", [
+            movieData.name, movieData.location, movieData.letter, movieData.category, movieData.main_actors_actresses
+        ]);
+        await changeLogs(movieData, "add");
         res.render("adding_page.ejs", {response: "Success"})
     }catch(err){
+        console.log(err);
         res.render("adding_page.ejs", {response: "Failed, Movie already exists"})
     }
 })
@@ -129,6 +133,7 @@ app.post("/update-current-movie", async (req, res) => {
 
 app.post("/delete", async (req, res) => {
     const response = await db.query("DELETE FROM movies WHERE LOWER (name) = $1 RETURNING *", [req.body.param.toLowerCase()]);
+    console.log(response.rows[0]);
     if (response.rowCount === 0){
         res.render("admin_page.ejs", {response: `Failed, Movie: ${req.body.param} does not exist`});
     }else {

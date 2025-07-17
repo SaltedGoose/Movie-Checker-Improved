@@ -1,4 +1,4 @@
-import express, { response } from "express";
+import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
 import bcrypt from 'bcrypt';
@@ -7,10 +7,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 const db = new pg.Client({
-  user: 'movies_i3n8_user',
-  host: process.env.DATABASE_URL,
-  database: 'movies_i3n8',
-  password: 'GmP9fujyyERqF7HqVwvEsPw9wIh69qB5',
+  user: 'neondb_owner',
+  host: 'ep-weathered-bar-abjavzid-pooler.eu-west-2.aws.neon.tech',
+  database: 'neondb',
+  password: 'npg_GaBDo8RqXf4y',
   port: 5432,
   ssl: {
     rejectUnauthorized: false,
